@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kartik Vashistha | Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+</head>
+<style>
+    :root {
+    --neon: #00f5ff;
+    --neon2: #7b2fff;
+    --neon3: #ff2d78;
+    --bg: #020510;
+    --surface: rgba(0, 245, 255, 0.04);
+    --border: rgba(0, 245, 255, 0.15);
+    --text: #e0f7ff;
+    --muted: rgba(200, 230, 255, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+    width: 12px;
+    height: 12px;
+    background: var(--neon);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+    box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon);
+}
+
+.cursor-ring {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--neon);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.12s ease;
+    opacity: 0.5;
+}
+
+/* THREE.JS CANVAS */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* NAVBAR */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 18px 40px;
+    background: rgba(2, 5, 16, 0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-brand {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--neon);
+    text-shadow: 0 0 20px var(--neon);
+    letter-spacing: 3px;
+    text-decoration: none;
+}
+
+.nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-left: 32px;
+    transition: color 0.3s;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--neon);
+    transition: width 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--neon);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* SECTIONS */
+section {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* HERO */
+#hero {
+    padding: 120px 0 60px;
+    overflow: hidden;
+}
+
+.hero-tag {
+    display: inline-block;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: var(--neon);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    animation: fadeSlideUp 0.8s ease forwards;
+    opacity: 0;
+}
+
+.hero-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -1px;
+    animation: fadeSlideUp 0.8s 0.2s ease forwards;
+    opacity: 0;
+}
+
+.hero-name .line1 {
+    color: var(--text);
+}
+
+.hero-name .line2 {
+    background: linear-gradient(90deg, var(--neon), var(--neon2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+}
+
+.hero-role {
+    font-size: 1.3rem;
+    color: var(--muted);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 20px 0 32px;
+    animation: fadeSlideUp 0.8s 0.4s ease forwards;
+    opacity: 0;
+}
+
+.hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.8;
+    animation: fadeSlideUp 0.8s 0.6s ease forwards;
+    opacity: 0;
+}
+
+.hero-btns {
+    margin-top: 40px;
+    animation: fadeSlideUp 0.8s 0.8s ease forwards;
+    opacity: 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-neon {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    padding: 14px 32px;
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    background: transparent;
+    text-transform: uppercase;
+    cursor: none;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s;
+}
+
+.btn-neon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--neon);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+}
+
+.btn-neon:hover {
+    color: var(--bg);
+}
+
+.btn-neon:hover::before {
+    transform: scaleX(1);
+}
+
+.btn-neon2 {
+    border-color: var(--neon2);
+    color: var(--neon2);
+}
+
+.btn-neon2::before {
+    background: var(--neon2);
+}
+
+/* 3D HERO OBJECT */
+#hero-3d {
+    width: 100%;
+    height: 420px;
+    position: relative;
+}
+
+#hero-3d canvas {
+    display: block;
+    border-radius: 12px;
+}
+
+/* SECTION HEADINGS */
+.section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+}
+
+.section-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon), transparent);
+    margin-bottom: 48px;
+}
+
+/* ABOUT */
+#about {
+    padding: 100px 0;
+}
+
+.about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--neon), var(--neon2));
+}
+
+.about-text {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--muted);
+}
+
+.stat-box {
+    text-align: center;
+    padding: 28px 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 16px;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.stat-box:hover {
+    border-color: var(--neon);
+    transform: translateY(-4px);
+}
+
+.stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--neon);
+    text-shadow: 0 0 20px var(--neon);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+/* SKILLS */
+#skills {
+    padding: 100px 0;
+}
+
+.skill-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.4s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon), var(--neon2));
+    transition: width 0.4s ease;
+}
+
+.skill-card:hover {
+    border-color: rgba(0, 245, 255, 0.4);
+    transform: translateY(-4px);
+}
+
+.skill-card:hover::after {
+    width: 100%;
+}
+
+.skill-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 14px;
+}
+
+.skill-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.skill-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--neon), var(--neon2));
+    box-shadow: 0 0 10px var(--neon);
+    width: 0;
+    transition: width 1.5s cubic-bezier(.4, 0, .2, 1);
+}
+
+.skill-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+/* PROJECT */
+#projects {
+    padding: 100px 0;
+}
+
+.project-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    transition: transform 0.4s, border-color 0.4s;
+    height: 100%;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--neon);
+}
+
+.project-img {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #0a0a1a 0%, #0d1633 50%, #0a1225 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-3d-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--neon);
+    border: 1px solid var(--neon);
+    padding: 4px 10px;
+}
+
+.project-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.project-body {
+    padding: 28px;
+}
+
+.project-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.project-desc {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--neon);
+    font-family: 'Orbitron', monospace;
+    margin: 3px;
+}
+
+/* EDUCATION */
+#education {
+    padding: 100px 0;
+}
+
+.edu-item {
+    display: flex;
+    gap: 24px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 20px;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.edu-item:hover {
+    border-color: var(--neon);
+    transform: translateX(6px);
+}
+
+.edu-year {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--neon);
+    white-space: nowrap;
+    padding-top: 4px;
+    letter-spacing: 1px;
+}
+
+.edu-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.edu-school {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.edu-score {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--neon2);
+    font-family: 'Orbitron', monospace;
+}
+
+
+/* CONTACT */
+#contact {
+    padding: 100px 0 60px;
+}
+
+.contact-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon2), var(--neon), var(--neon3));
+}
+
+.contact-email {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--neon);
+    letter-spacing: 2px;
+    margin: 24px 0;
+    text-shadow: 0 0 20px var(--neon);
+}
+
+.contact-phone {
+    font-size: 1.1rem;
+    color: var(--muted);
+    letter-spacing: 3px;
+}
+
+/* FOOTER */
+footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    font-family: 'Orbitron', monospace;
+}
+
+/* GLOW GRID */
+.glow-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(0, 245, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-16px);
+    }
+}
+
+@keyframes pulse-neon {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon);
+    }
+
+    50% {
+        box-shadow: 0 0 20px var(--neon), 0 0 50px var(--neon), 0 0 80px var(--neon);
+    }
+}
+
+@keyframes scanline {
+    0% {
+        top: -100%;
+    }
+
+    100% {
+        top: 200%;
+    }
+}
+
+.float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--neon);
+    border-radius: 2px;
+}
+</style>
+
+<body>
+
+    <!-- CURSOR -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- BACKGROUND -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="glow-grid"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <a href="#hero" class="nav-brand">KV</a>
+            <div class="nav-links d-none d-md-flex">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+                <a href="#education">Education</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6">
+                    <div class="hero-tag"> PORTFOLIO </div>
+                    <div class="hero-name">
+                        <div class="line1">KARTIK</div>
+                        <div class="line2" style="width: 700px;">VASHISTHA</div>
+                    </div>
+                    <div class="hero-role">MCA · Web Developer · Creator</div>
+                    <div class="hero-desc">
+                        Building immersive digital experiences with cutting-edge web technologies.
+                        Passionate about 3D interfaces, interactive design, and clean code.
+                    </div>
+                    <div class="hero-btns">
+                        <a href="#projects" class="btn-neon">View Projects</a>
+                        <a href="#contact" class="btn-neon btn-neon2">Contact Me</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="hero-3d" class="float"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-7 reveal">
+                    <div class="section-label"> ABOUT ME </div>
+                    <h2 class="section-title">WHO AM I</h2>
+                    <div class="section-line"></div>
+                    <div class="about-card">
+                        <p class="about-text">
+                            I'm <strong style="color:var(--neon)">Kartik Vashistha</strong>, an MCA student at SRM IST
+                            FSH - Modi Nagar,
+                            graduating in 2026. I'm a web developer who loves crafting interactive 3D web experiences
+                            using HTML, CSS, JavaScript, and Three.js.<br><br>
+                            My academic journey spans from Class X to pursuing my Masters in Computer Applications,
+                            constantly leveling up my technical skills. I enjoy building projects that blend aesthetics
+                            with functionality — from e-commerce platforms to immersive 3D web experiences.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-5 reveal">
+                    <div class="section-label" style="opacity:0">_</div>
+                    <h2 class="section-title" style="opacity:0">_</h2>
+                    <div class="section-line" style="opacity:0"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-num">2026</div>
+                                <div class="stat-label">Graduation</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-num">MCA</div>
+                                <div class="stat-label">Degree</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-num">3D</div>
+                                <div class="stat-label">Web Dev</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-num">UP</div>
+                                <div class="stat-label">India</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+        <div class="container">
+            <div class="section-label reveal"> SKILLS</div>
+            <h2 class="section-title reveal">TECH STACK</h2>
+            <div class="section-line reveal"></div>
+            <div class="row gy-3">
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">🌐</div>
+                        <div class="skill-name">HTML5</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="95"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">🎨</div>
+                        <div class="skill-name">CSS3</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="88"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">⚡</div>
+                        <div class="skill-name">JavaScript</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="80"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">🗄️</div>
+                        <div class="skill-name">SQL</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="72"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">🅱️</div>
+                        <div class="skill-name">Bootstrap</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="85"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">💨</div>
+                        <div class="skill-name">Tailwind CSS</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="78"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">🌀</div>
+                        <div class="skill-name">Three.js</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="70"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="skill-card">
+                        <div class="skill-icon">⚛️</div>
+                        <div class="skill-name">React.js</div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" data-width="65"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-label reveal"> PROJECTS</div>
+            <h2 class="section-title reveal">MY WORK</h2>
+            <div class="section-line reveal"></div>
+            <div class="row gy-4">
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="project-card">
+                        <div class="project-img">
+                            <canvas class="project-canvas" id="proj1-canvas"></canvas>
+                            <div class="project-3d-badge">3D LIVE</div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-title">E-Commerce Website</div>
+                            <div class="project-desc">
+                                Full-featured e-commerce platform with 3D product models,
+                                chatbot assistant, cart system, and login authentication.
+                            </div>
+                            <div>
+                                <span class="tag">HTML</span>
+                                <span class="tag">CSS</span>
+                                <span class="tag">JS</span>
+                                <span class="tag">Three.js</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="project-card">
+                        <div class="project-img" style="background:linear-gradient(135deg,#0a0a1a,#150d2b,#0a0f20);">
+                            <canvas class="project-canvas" id="proj2-canvas"></canvas>
+                            <div class="project-3d-badge" style="color:var(--neon2);border-color:var(--neon2)">AI BOT
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-title">ChatBot Interface</div>
+                            <div class="project-desc">
+                                Intelligent chatbot integration with natural language processing
+                                and a modern interactive UI for e-commerce assistance.
+                            </div>
+                            <div>
+                                <span class="tag" style="color:var(--neon2);border-color:var(--neon2)">JS</span>
+                                <span class="tag" style="color:var(--neon2);border-color:var(--neon2)">AI API</span>
+                                <span class="tag" style="color:var(--neon2);border-color:var(--neon2)">CSS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 reveal">
+                    <div class="project-card">
+                        <div class="project-img" style="background:linear-gradient(135deg,#0a0a1a,#1a0d10,#0a0f20);">
+                            <canvas class="project-canvas" id="proj3-canvas"></canvas>
+                            <div class="project-3d-badge" style="color:var(--neon3);border-color:var(--neon3)">PORTFOLIO
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-title">3D Portfolio</div>
+                            <div class="project-desc">
+                                This very portfolio — an immersive 3D animated portfolio website
+                                built with Three.js, HTML, CSS and Bootstrap.
+                            </div>
+                            <div>
+                                <span class="tag" style="color:var(--neon3);border-color:var(--neon3)">Three.js</span>
+                                <span class="tag" style="color:var(--neon3);border-color:var(--neon3)">HTML</span>
+                                <span class="tag" style="color:var(--neon3);border-color:var(--neon3)">Bootstrap</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education">
+        <div class="container">
+            <div class="section-label reveal"> EDUCATION </div>
+            <h2 class="section-title reveal">MY JOURNEY</h2>
+            <div class="section-line reveal"></div>
+            <div class="col-lg-8">
+                <div class="edu-item reveal">
+                    <div class="edu-year">2024–<br>2026</div>
+                    <div>
+                        <div class="edu-title">Master of Computer Applications (MCA)</div>
+                        <div class="edu-school">SRM IST FSH — Modi Nagar, Ghaziabad, UP</div>
+                        <div class="edu-score">// CURRENTLY PURSUING</div>
+                    </div>
+                </div>
+                <div class="edu-item reveal">
+                    <div class="edu-year">2021–<br>2024</div>
+                    <div>
+                        <div class="edu-title">BCA — Bachelor of Computer Applications</div>
+                        <div class="edu-school">CCSU, Meerut, Uttar Pradesh</div>
+                        <div class="edu-score">60.6%</div>
+                    </div>
+                </div>
+                <div class="edu-item reveal">
+                    <div class="edu-year">2021</div>
+                    <div>
+                        <div class="edu-title">Class XII — CBSE</div>
+                        <div class="edu-school">Maharishi Vidya Mandir, Modinagar, UP</div>
+                        <div class="edu-score">71.5%</div>
+                    </div>
+                </div>
+                <div class="edu-item reveal">
+                    <div class="edu-year">2019</div>
+                    <div>
+                        <div class="edu-title">Class X — CBSE</div>
+                        <div class="edu-school">Maharishi Vidya Mandir, Modinagar, UP</div>
+                        <div class="edu-score">51.2%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-label reveal"> CONTACT ME </div>
+            <h2 class="section-title reveal">GET IN TOUCH</h2>
+            <div class="section-line reveal"></div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 reveal">
+                    <div class="contact-card">
+                        <p style="color:var(--muted);font-size:1.05rem;line-height:1.8;">
+                            Open to internship opportunities, freelance projects, and collaborations.
+                            Let's build something amazing together!
+                        </p>
+                        <div class="contact-email">kartikvashistha81@gmail.com</div>
+                        <div class="hero-btns justify-content-center mt-4">
+                            <a href="mailto:kartikvashistha@gmail.com" class="btn-neon">Send Email</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <span style="color:var(--neon)">KARTIK VASHISTHA</span> &nbsp;·&nbsp; BUILT WITH THREE.JS + HTML + BOOTSTRAP
+        &nbsp;·&nbsp; © 2026
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="Portfolio.js"></script>
+</body>
+
+</html>
